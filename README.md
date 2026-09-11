@@ -1,6 +1,6 @@
 # Google SecOps: Data Table Left Outer Joins, Anti-Joins, and Multi-Column Tuple Suppressions
 
-This repository provides canonical reproduction suites, schemas, datasets, and YARA-L detection rules validating **Left Outer Join** (`#dt >= 0`), **Anti-Join / Exclusion** (`#dt = 0`), and **Multi-Column Composite Tuple Suppressions** in Google Security Operations (Malachite / Chronicle).
+This repository provides a reference set of datatables and YARA-L detection rules validating **Left Outer Join** (`#dt >= 0`), **Anti-Join / Exclusion** (`#dt = 0`), and **Multi-Column Composite Tuple Suppressions** in Google Security Operations (Malachite / Chronicle).
 
 ---
 
