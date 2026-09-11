@@ -1,0 +1,4 @@
+hostname,scanner_ip,scanner_tool,authorized_by
+scan-sec-01.corp.internal,10.10.100.15,Qualys,SEC-8831
+vuln-check-02.corp.internal,10.10.100.16,Nessus,SEC-9102
+corp-recon-03.corp.internal,10.10.100.17,Rapid7,SEC-9404

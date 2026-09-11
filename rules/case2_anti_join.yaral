@@ -1,0 +1,48 @@
+// Case 2A: Native Anti-Join via #dt = 0 
+rule dt_anti_join_01_nonexistence_condition {
+  meta:
+    author = "Kyle Champlin"
+    description = "Anti-join exclusion list using #dt = 0: triggers alert ONLY if host is NOT in authorized scanner table"
+  events:
+
+    $e.principal.hostname = ""
+    $hostname = $e.principal.hostname
+
+    // Bind join key to Data Table
+    $hostname = %authorized_scanners_exclusion.hostname
+
+  match:
+    $hostname over 1h
+
+  outcome:
+    $total_sent_bytes = sum($e.network.sent_bytes)
+
+  condition:
+    $e AND #authorized_scanners_exclusion = 0
+}
+
+
+// Case 2B: Outcome Aggregation Count Workaround
+rule dt_anti_join_02_outcome_count_workaround {
+  meta:
+    author = "Kyle Champlin"
+    description = "Anti-join via outcome variable count check: triggers when scanner match count is zero"
+  events:
+
+    $hostname = $e.principal.hostname
+
+    $hostname = %authorized_scanners_exclusion.hostname
+
+  match:
+    $hostname over 1h
+
+  outcome:
+    $total_sent_bytes = sum($e.network.sent_bytes)
+    $scanner_match_count = count(%authorized_scanners_exclusion.hostname)
+
+
+  condition:
+    $e AND $scanner_match_count = 0
+    // alternative that also enforced a anti join: #authorized_scanners_exclusion = 0
+    // that example is shown in rule dt_anti_join_01_nonexistence_condition
+}

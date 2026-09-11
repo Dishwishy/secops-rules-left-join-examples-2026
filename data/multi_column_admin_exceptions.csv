@@ -1,0 +1,4 @@
+origin_ip,target_ip,username,action,exception_reason
+10.0.1.50,192.168.10.5,svc_backup_admin,BACKUP_SYNC,Scheduled nightly backup
+10.0.1.51,192.168.10.20,svc_deployer,RELEASE_DEPLOY,Automated CI/CD deployment
+172.16.5.100,10.200.1.1,admin_tier1,SSH_REMOTE_EXEC,Approved bastion jump

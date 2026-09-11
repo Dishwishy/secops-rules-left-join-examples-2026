@@ -1,0 +1,29 @@
+// Case 3: Modern Clean Implementation: Multi-Column Composite Row Anti-Join
+// Replaces the legacy 9-field strings.concat + regex delimiter hack with clean row-tuple binding.
+rule multi_column_tuple_exclusion {
+  meta:
+    author = "Kyle Champlin"
+    description = "Clean multi-column row tuple anti-join: excludes activity matching composite (src_ip, target_ip, user, action) rows"
+  events:
+    
+    // Bind event fields to match variables
+    $e.principal.ip = $src_ip
+    $e.target.ip = $dst_ip
+    $e.principal.user.userid = $user
+    $e.metadata.product_event_type = $action
+
+    // Multi-column equality against same Data Table row
+    $src_ip = %multi_column_admin_exceptions.origin_ip
+    $dst_ip = %multi_column_admin_exceptions.target_ip
+    $user = %multi_column_admin_exceptions.username
+    $action = %multi_column_admin_exceptions.action
+
+  match:
+    $src_ip, $dst_ip, $user, $action over 5m
+
+  outcome:
+    $event_count = count($e.metadata.id)
+
+  condition:
+    $e AND #multi_column_admin_exceptions = 0
+}

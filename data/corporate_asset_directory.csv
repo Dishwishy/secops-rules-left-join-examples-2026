@@ -1,0 +1,7 @@
+hostname,country_code,country_name,asset_tier,owner_dept,risk_score
+ES01-W10,ES,Spain,TIER_3_WORKSTATION,Finance,20
+CH02-SRV,CH,Switzerland,TIER_1_CRITICAL,Engineering,80
+US03-LAP,US,United States,TIER_2_PRODUCTION,Executive,50
+FR04-SRV,FR,France,TIER_1_CRITICAL,Engineering,80
+DE05-W10,DE,Germany,TIER_3_WORKSTATION,Sales,20
+GB06-LAP,GB,United Kingdom,TIER_2_PRODUCTION,Finance,40

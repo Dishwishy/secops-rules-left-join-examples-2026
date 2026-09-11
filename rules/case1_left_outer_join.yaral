@@ -1,0 +1,70 @@
+// Case 1A: Problem Demonstration (Inner Join Event Drop)
+rule dt_left_outer_join_01_inner_drop_failure {
+  meta:
+    author = "Kyle Champlin"
+    description = "Demonstrates inner-join event drop: drops events whose hostname is not in the data table"
+  events:
+    $e.principal.hostname != ""
+    $hostname = $e.principal.hostname
+
+    // Direct inner join against Data Table
+    $hostname = %corporate_asset_directory.hostname
+
+  match:
+       $hostname over 1h
+
+  outcome:
+    $country = array_distinct(%corporate_asset_directory.country_code)
+    $asset_tier = array_distinct(%corporate_asset_directory.asset_tier)
+    $risk_score = max(%corporate_asset_directory.risk_score)
+
+  condition:
+    $e  AND #corporate_asset_directory > 0
+}
+
+// Case 1B: Standard Left Outer Join via #dt >= 0 (Zero Event Loss)
+rule dt_left_outer_join_02_standard_enrichment {
+  meta:
+    author = "Kyle Champlin"
+    description = "Standard Left Outer Join using #dt >= 0: preserves 100% of events and populates enrichment fields"
+  events:
+    $e.principal.hostname != ""
+    $hostname = $e.principal.hostname
+
+    // Outer join equality binding
+    $hostname = %corporate_asset_directory.hostname
+
+  match:
+    $hostname over 1h
+
+  outcome:
+    $country = array_distinct(strings.coalesce(%corporate_asset_directory.country_code, "UNKNOWN"))
+    $asset_tier = array_distinct(strings.coalesce(%corporate_asset_directory.asset_tier, "UNMANAGED"))
+    $risk_score = max(if(%corporate_asset_directory.risk_score > 0, %corporate_asset_directory.risk_score, 0))
+
+  condition:
+    $e AND #corporate_asset_directory >= 0
+}
+
+
+rule dt_left_outer_join_03_common_compiler_native {
+  meta:
+    author = "Kyle Champlin"
+    description = "Native declarative LEFT JOIN syntax for Common Compiler. Common compiler is still rolling out"
+  events:
+
+    $hostname = $e.principal.hostname
+
+    left join $hostname = %corporate_asset_directory.hostname
+
+  match:
+    $hostname over 1h
+
+  outcome:
+    $country = array_distinct(strings.coalesce(%corporate_asset_directory.country_code, "UNKNOWN"))
+    $asset_tier = array_distinct(strings.coalesce(%corporate_asset_directory.asset_tier, "UNMANAGED"))
+    $risk_score = max(if(%corporate_asset_directory.risk_score > 0, %corporate_asset_directory.risk_score, 0))
+
+  condition:
+    $e
+}
